@@ -1,0 +1,54 @@
+.container {
+	display: flex;
+	background-color: #323232;
+	padding-top: 1px;
+
+	.btn {
+		background-color: #323232;
+		width: 100%;
+		height: 100%;
+		color: #d2d2d2;
+		font-family: Microsoft Sans Serif, Segoe UI, sans-serif;
+		font-size: 12px;
+		letter-spacing: -0.2px;
+		cursor: pointer;
+		border: none;
+
+		&:hover {
+			background-color: #505050;
+		}
+
+		&:active {
+			background-color: #898989;
+		}
+	}
+
+	.options {
+		width: 85px;
+		height: 24px;
+		margin-left: 6px;
+		font-size: 13px;
+
+		&:hover {
+			background-color: #292929;
+		}
+	}
+
+	.titleBar {
+		width: 100%;
+		height: 24px;
+		user-select: none;
+		display: flex;
+		justify-content: flex-end;
+		position: relative;
+	}
+
+	.closeButton {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		width: 24px;
+		height: 24px;
+		cursor: pointer;
+	}
+}

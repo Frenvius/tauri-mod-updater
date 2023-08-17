@@ -1,0 +1,60 @@
+.container {
+	padding: 10px;
+
+	.statusText {
+		height: 18px;
+		font-family: Microsoft Sans Serif, Segoe UI, sans-serif;
+		color: #d2d2d2;
+		font-size: 12px;
+		letter-spacing: -0.2px;
+	}
+
+	.playButton {
+		background-color: #323232;
+		width: 100%;
+		height: 100%;
+		border: 1px solid #646464;
+		color: #d2d2d2;
+		text-transform: uppercase;
+		font-family: Microsoft Sans Serif, Segoe UI, sans-serif;
+		font-size: 12px;
+		letter-spacing: -0.2px;
+		cursor: pointer;
+
+		&:hover {
+			background-color: #3c3c3c;
+		}
+
+		&:active {
+			background-color: #898989;
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+
+			&:hover {
+				background-color: #323232;
+			}
+
+			&:active {
+				background-color: #323232;
+			}
+		}
+	}
+
+	.notification {
+		position: fixed;
+		bottom: 20px;
+		left: 20px;
+		width: 200px;
+		padding: 20px;
+		border-radius: 5px;
+		background-color: white;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	}
+
+	.hidden {
+		display: none;
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"name": "mod-updater",
+	"private": true,
+	"version": "1.0.0",
+	"scripts": {
+		"next-start": "cross-env BROWSER=none next dev",
+		"next-build": "next build && next export",
+		"tauri": "tauri",
+		"build": "tauri build",
+		"dev": "tauri dev"
+	},
+	"dependencies": {
+		"@emotion/react": "^11.10.5",
+		"@emotion/styled": "^11.10.5",
+		"@mui/icons-material": "^5.10.9",
+		"@mui/material": "^5.10.11",
+		"@tauri-apps/api": "^1.1.0",
+		"@tauri-apps/tauri-forage": "^1.0.0-beta.2",
+		"next": "^13.0.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"sass": "^1.55.0",
+		"simple-git": "^3.14.1",
+		"tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#next"
+	},
+	"devDependencies": {
+		"@tauri-apps/cli": "^1.1.1",
+		"cross-env": "^7.0.3",
+		"lodash": "^4.17.21",
+		"prettier": "^2.7.1"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}
