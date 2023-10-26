@@ -77,11 +77,17 @@
 					"cmd": "start",
 					"name": "start",
 					"sidecar": false
+				},
+				{
+					"args": true,
+					"cmd": "echo",
+					"name": "echo",
+					"sidecar": false
 				}
 			]
 		},
 		"updater": {
-			"endpoints": ["https://updater.frenvius.com?version={{current_version}}"]
+			"endpoints": ["https://gist.githubusercontent.com/Frenvius/cb8c95d8046381991db2576a186e707b/raw/dd27c4c549045b1576e0d04f1619ae5d575de071/mod-updater.json"]
 		}
 	}
 }

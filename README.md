@@ -2,7 +2,7 @@
 
 A lightweight mod updater for the game Valheim built with [Tauri 2.0](https://beta.tauri.app/guides/).
 
-![mod-updater.png](.github%2Fmod-updater.png)
+![mod-updater.png](.github/mod-updater.png)
 
 ## Overview
 
@@ -17,6 +17,8 @@ It checks for updates in a specified Git repository and applies them to your Val
 
 ## Usage
 
-1. Clone this repository and change git repository URL in `/src/services/git.service.ts` to your own.
+1. Clone this repository and set the environment variable `MOD_UPDATER_GIT_URL` with your own repository url.
 2. Install dependencies with `npm install` and run the project using `npm run tauri dev`.
 3. The mod updater will check for updates in the Git repository and apply them to your Valheim game folder.
+
+_**Note:** You can also use the [release](https://github.com/Frenvius/tauri-mod-updater/releases) version once you set the environment variable `MOD_UPDATER_GIT_URL`._

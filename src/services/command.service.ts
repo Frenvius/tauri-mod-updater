@@ -34,6 +34,17 @@ class CommandService {
 		}).execute();
 	}
 
+	async readEnvVariable(variableName: string): Promise<string> {
+		const commandResult = await Command.create('echo', [`%${variableName}%`], {
+			encoding: 'utf8'
+		}).execute();
+		if (commandResult.code !== 0) {
+			throw new Error(commandResult.stderr);
+		}
+
+		return commandResult.stdout.trim();
+	}
+
 	pathChecker = (path: string) => {
 		return path.match(/^(?!.*[\\\/]\s+)(?!(?:.*\s|.*\.|\W+)$)(?:[a-zA-Z]:)?(?:(?:[^<>:"\|\?\*\n])+(?:\/\/|\/|\\\\|\\)?)+$/gm);
 	};
