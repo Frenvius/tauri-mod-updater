@@ -2,6 +2,8 @@
 
 A lightweight mod updater for the game Valheim built with [Tauri 2.0](https://beta.tauri.app/guides/).
 
+![mod-updater.png](.github%2Fmod-updater.png)
+
 ## Overview
 
 This project is designed to simplify the process of updating and sync mods for Valheim with friends. 
