@@ -1,7 +1,6 @@
 .container {
 	display: flex;
 	background-color: #323232;
-	padding-top: 1px;
 
 	.btn {
 		background-color: #323232;
@@ -47,8 +46,9 @@
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		width: 24px;
+		width: 30px;
 		height: 24px;
 		cursor: pointer;
+		padding-right: 9px;
 	}
 }

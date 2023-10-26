@@ -1,44 +1,38 @@
 {
-	"name": "mod-updater",
+	"name": "valheim-mod-updater",
 	"private": true,
-	"version": "1.0.0",
+	"version": "0.0.0",
+	"type": "module",
 	"scripts": {
-		"next-start": "cross-env BROWSER=none next dev",
-		"next-build": "next build && next export",
-		"tauri": "tauri",
-		"build": "tauri build",
-		"dev": "tauri dev"
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"tauri": "tauri"
 	},
 	"dependencies": {
-		"@emotion/react": "^11.10.5",
-		"@emotion/styled": "^11.10.5",
-		"@mui/icons-material": "^5.10.9",
-		"@mui/material": "^5.10.11",
-		"@tauri-apps/api": "^1.1.0",
-		"@tauri-apps/tauri-forage": "^1.0.0-beta.2",
-		"next": "^13.0.0",
+		"@emotion/react": "^11.11.1",
+		"@emotion/styled": "^11.11.0",
+		"@mui/icons-material": "^5.14.14",
+		"@mui/material": "^5.14.14",
+		"@tauri-apps/api": "^2.0.0-alpha.8",
+		"@tauri-apps/plugin-fs": "github:tauri-apps/tauri-plugin-fs#v2",
+		"@tauri-apps/plugin-process": "^2.0.0-alpha.2",
+		"@tauri-apps/plugin-shell": "^2.0.0-alpha.1",
+		"@tauri-apps/plugin-updater": "^2.0.0-alpha.2",
+		"@tauri-apps/plugin-window": "github:tauri-apps/tauri-plugin-window#v2",
 		"react": "^18.2.0",
+		"react-custom-scrollbars-2": "^4.5.0",
 		"react-dom": "^18.2.0",
-		"sass": "^1.55.0",
-		"simple-git": "^3.14.1",
-		"tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#next"
+		"sass": "^1.69.4"
 	},
 	"devDependencies": {
-		"@tauri-apps/cli": "^1.1.1",
-		"cross-env": "^7.0.3",
-		"lodash": "^4.17.21",
-		"prettier": "^2.7.1"
-	},
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
+		"@tauri-apps/cli": "^2.0.0-alpha.9",
+		"@types/react": "^18.2.15",
+		"@types/react-dom": "^18.2.7",
+		"@vitejs/plugin-react": "^4.0.3",
+		"prettier": "^2.8.8",
+		"prettier-plugin-classify-imports": "^0.0.2",
+		"typescript": "^5.0.2",
+		"vite": "^4.4.4"
 	}
 }

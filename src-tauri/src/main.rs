@@ -1,17 +1,18 @@
-#![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
-)]
+// Prevents additional console window on Windows in release, DO NOT REMOVE!!
+#![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
 use tauri::Window;
-use tauri::Manager;
+use std::io::Write;
 use html_parser::Dom;
 use std::path::{Path};
 use std::cell::RefCell;
-use window_shadows::set_shadow;
+use std::fs::{self, File};
 use git2::build::{RepoBuilder};
 use git2::{Direction, Repository};
 use git2::{FetchOptions, Progress, RemoteCallbacks};
+
+mod config;
+mod utilities;
 
 struct State {
     progress: Option<Progress<'static>>
@@ -19,15 +20,54 @@ struct State {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![run_game_windows, parse, sys_user_name, git_clone, git_pull, get_latest_hash, get_current_hash])
+        .invoke_handler(tauri::generate_handler![
+            get_initial_data,
+            run_game_windows,
+            parse,
+            sys_user_name,
+            git_clone,
+            git_pull,
+            get_latest_hash,
+            get_current_hash,
+            config::get_config,
+            config::set_config,
+            config::reset_config_file,
+            utilities::set_log,
+            utilities::play_locked,
+            utilities::play_text,
+            utilities::git_progress,
+            utilities::is_installed,
+            utilities::needs_update,
+            utilities::progress_type,
+            utilities::status_text
+        ])
         .setup(|app| {
-            let window = app.get_window("main").unwrap();
-            set_shadow(&window, true).expect("Unsupported platform!");
+            #[cfg(desktop)]
+            app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;
             Ok(())
         })
-        .plugin(tauri_plugin_window_state::Builder::default().build())
+        .plugin(tauri_plugin_window::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_fs::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn get_initial_data() -> Result<String, String> {
+    let user_name = whoami::username();
+    let path = format!("C:/Users/{}/mod_updater_data.json", user_name);
+
+    match fs::read_to_string(&path) {
+        Ok(data) => Ok(data),
+        Err(_) => {
+			let default_data = "{}".to_string();
+			match File::create(&path).and_then(|mut file| file.write_all(default_data.as_bytes())) {
+				Ok(_) => Ok(default_data),
+				Err(e) => Err(e.to_string()),
+			}
+        },
+	}
 }
 
 #[cfg(target_os = "windows")]
@@ -44,14 +84,14 @@ async fn run_game_windows(exec: String) {
 
 #[tauri::command]
 async fn parse(value: &str) -> Result<String, Error> {
-    let lol = Dom::parse(value)?.to_json_pretty()?;
-    Ok(lol)
+    let result = Dom::parse(value)?.to_json_pretty()?;
+    Ok(result)
 }
 
 #[tauri::command]
 async fn sys_user_name() -> Result<String, Error> {
-    let lol = whoami::username();
-    Ok(lol)
+    let user_name = whoami::username();
+    Ok(user_name)
 }
 
 #[tauri::command]
@@ -71,6 +111,7 @@ async fn git_clone(url: String, path: String, window: Window) -> Result<String, 
     });
 
     let mut fo = FetchOptions::new();
+    fo.depth(1);
     fo.remote_callbacks(cb);
     RepoBuilder::new()
         .fetch_options(fo)

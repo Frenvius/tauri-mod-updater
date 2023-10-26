@@ -1,5 +1,5 @@
 {
-	"printWidth": 120,
+	"printWidth": 140,
 	"tabWidth": 4,
 	"useTabs": true,
 	"semi": true,
@@ -7,5 +7,9 @@
 	"trailingComma": "none",
 	"bracketSpacing": true,
 	"jsxBracketSameLine": false,
-	"fluid": false
+	"fluid": false,
+	"sortingMethod": "lineLength",
+	"stripNewlines": true,
+	"plugins": ["prettier-plugin-classify-imports"],
+	"importOrder": ["^[./]|(~/)|(@/)"]
 }

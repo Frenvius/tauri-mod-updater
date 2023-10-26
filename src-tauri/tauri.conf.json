@@ -1,67 +1,20 @@
 {
 	"build": {
-		"beforeDevCommand": "npm run next-start",
-		"beforeBuildCommand": "npm run next-build",
-		"devPath": "http://localhost:3000",
-		"distDir": "../out",
+		"beforeDevCommand": "npm run dev",
+		"beforeBuildCommand": "npm run build",
+		"devPath": "http://localhost:1420",
+		"distDir": "../dist",
 		"withGlobalTauri": true
 	},
 	"package": {
 		"productName": "mod-updater",
-		"version": "1.0.3"
+		"version": "1.0.5"
 	},
 	"tauri": {
-		"allowlist": {
-			"all": true,
-			"fs": {
-				"all": true,
-				"scope": ["**"]
-			},
-			"path": {
-				"all": true
-			},
-			"shell": {
-				"all": true,
-				"execute": true,
-				"sidecar": true,
-				"open": true,
-				"scope": [
-					{
-						"name": "wmic",
-						"cmd": "wmic",
-						"args": true
-					},
-					{
-						"name": "taskkill",
-						"cmd": "taskkill",
-						"args": true
-					},
-					{
-						"name": "robocopy",
-						"cmd": "robocopy",
-						"args": true
-					},
-					{
-						"name": "explorer",
-						"cmd": "explorer",
-						"args": true
-					},
-					{
-						"name": "start",
-						"cmd": "start",
-						"args": true
-					}
-				]
-			}
-		},
 		"bundle": {
 			"active": true,
-			"category": "DeveloperTool",
-			"copyright": "",
-			"deb": {
-				"depends": []
-			},
-			"externalBin": [],
+			"targets": "all",
+			"identifier": "com.frenvius.modsUpdate",
 			"icon": [
 				"icons/32x32.png",
 				"icons/128x128.png",
@@ -69,42 +22,66 @@
 				"icons/icon.icns",
 				"icons/icon.ico"
 			],
-			"identifier": "com.frenvius.modsUpdate",
-			"longDescription": "",
-			"macOS": {
-				"entitlements": null,
-				"exceptionDomain": "",
-				"frameworks": [],
-				"providerShortName": null,
-				"signingIdentity": null
-			},
-			"resources": [],
-			"shortDescription": "",
-			"targets": "all",
-			"windows": {
-				"certificateThumbprint": null,
-				"digestAlgorithm": "sha256",
-				"timestampUrl": ""
+			"updater": {
+				"active": true,
+				"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDFGOTVBNzIyMTYyRDFDRTgKUldUb0hDMFdJcWVWSDRZNmJBd1BYRlJQN1hSdktoY1RGRDBVbHhPSjlOTWx1dHVycHdMZVBseWIK"
 			}
 		},
 		"security": {
 			"csp": null
 		},
-		"updater": {
-			"active": true,
-			"endpoints": ["https://updater.frenvius.com?version={{current_version}}"],
-			"dialog": true,
-			"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDFGOTVBNzIyMTYyRDFDRTgKUldUb0hDMFdJcWVWSDRZNmJBd1BYRlJQN1hSdktoY1RGRDBVbHhPSjlOTWx1dHVycHdMZVBseWIK"
-		},
 		"windows": [
 			{
-				"fullscreen": false,
-				"width": 420,
-				"height": 228,
-				"resizable": false,
 				"decorations": false,
-				"title": "mod-updater"
+				"fullscreen": false,
+				"resizable": false,
+				"title": "mod-updater",
+				"width": 420,
+				"height": 228
 			}
 		]
+	},
+	"plugins": {
+		"fs": {
+			"scope": ["**"]
+		},
+		"shell": {
+			"open": true,
+			"scope": [
+				{
+					"args": true,
+					"cmd": "wmic",
+					"name": "wmic",
+					"sidecar": false
+				},
+				{
+					"args": true,
+					"cmd": "taskkill",
+					"name": "taskkill",
+					"sidecar": false
+				},
+				{
+					"args": true,
+					"cmd": "robocopy",
+					"name": "robocopy",
+					"sidecar": false
+				},
+				{
+					"args": true,
+					"cmd": "explorer",
+					"name": "explorer",
+					"sidecar": false
+				},
+				{
+					"args": true,
+					"cmd": "start",
+					"name": "start",
+					"sidecar": false
+				}
+			]
+		},
+		"updater": {
+			"endpoints": ["https://updater.frenvius.com?version={{current_version}}"]
+		}
 	}
 }

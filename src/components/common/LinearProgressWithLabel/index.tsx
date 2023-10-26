@@ -1,6 +1,9 @@
-import { Box } from '@mui/material';
+import React from 'react';
 import { styled } from '@mui/material/styles';
+import { Box, LinearProgressProps } from '@mui/material';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+
+import { ProgressType } from '~/context/AppState/types.ts';
 
 const BorderLinearProgress = styled(LinearProgress)(() => ({
 	height: 30,
@@ -14,7 +17,11 @@ const BorderLinearProgress = styled(LinearProgress)(() => ({
 	}
 }));
 
-const LinearProgressWithLabel = (props) => {
+interface Props extends LinearProgressProps {
+	variant?: ProgressType;
+}
+
+const LinearProgressWithLabel: React.FC<Props> = (props: Props) => {
 	return (
 		<Box sx={{ width: '100%' }}>
 			<BorderLinearProgress {...props} />
