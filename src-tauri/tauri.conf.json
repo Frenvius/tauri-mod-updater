@@ -87,7 +87,7 @@
 			]
 		},
 		"updater": {
-			"endpoints": ["https://gist.githubusercontent.com/Frenvius/cb8c95d8046381991db2576a186e707b/raw/dd27c4c549045b1576e0d04f1619ae5d575de071/mod-updater.json"]
+			"endpoints": ["https://raw.githubusercontent.com/Frenvius/tauri-mod-updater/master/public/updater-endpoint.json"]
 		}
 	}
 }
