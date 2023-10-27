@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { check, Update } from '@tauri-apps/plugin-updater';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 
 import './styles/global.scss';
 import Home from '~/components/Home';
 import AppProviders from '~/context';
+import Settings from '~/components/Settings';
 import TitleBar from '~/components/common/TitleBar';
 import { Config } from '~/context/AppState/types.ts';
 
@@ -47,17 +49,20 @@ const ModUpdater: React.FC<MainProps> = ({ configData }) => {
 	}, [configData]);
 
 	return (
-		<>
+		<BrowserRouter>
 			{config && (
 				<ThemeProvider theme={darkTheme}>
 					<CssBaseline />
 					<AppProviders data={config} update={update}>
 						<TitleBar />
-						<Home />
+						<Routes>
+							<Route path="/" Component={Home} />
+							<Route path="/settings" Component={Settings} />
+						</Routes>
 					</AppProviders>
 				</ThemeProvider>
 			)}
-		</>
+		</BrowserRouter>
 	);
 };
 

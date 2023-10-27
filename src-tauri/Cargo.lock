@@ -4162,7 +4162,7 @@ dependencies = [
 
 [[package]]
 name = "valheim-mod-updater"
-version = "1.0.5"
+version = "1.0.6"
 dependencies = [
  "git2",
  "html_parser",

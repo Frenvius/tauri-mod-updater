@@ -20,7 +20,8 @@ export interface AppStateContextProps {
 export interface Config {
 	installed: boolean;
 	update: boolean;
-	'valheim-path': string;
+	repoUrl: string;
+	valheimPath: string;
 }
 
 export interface AppStateProviderProps {

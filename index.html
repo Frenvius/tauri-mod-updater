@@ -15,7 +15,7 @@
 				try {
 					jsonData = JSON.parse(data);
 				} catch (error) {
-					const fileData = await invoke('get_config', { key: 'valheim-path' });
+					const fileData = await invoke('get_config', { key: 'valheimPath' });
 					jsonData = JSON.parse(fileData);
 				}
 

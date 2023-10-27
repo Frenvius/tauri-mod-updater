@@ -1,3 +1,12 @@
+@mixin iconButton {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	width: 30px;
+	height: 24px;
+	cursor: pointer;
+}
+
 .container {
 	display: flex;
 	background-color: #323232;
@@ -7,7 +16,6 @@
 		width: 100%;
 		height: 100%;
 		color: #d2d2d2;
-		font-family: Microsoft Sans Serif, Segoe UI, sans-serif;
 		font-size: 12px;
 		letter-spacing: -0.2px;
 		cursor: pointer;
@@ -25,8 +33,8 @@
 	.options {
 		width: 85px;
 		height: 24px;
-		margin-left: 6px;
 		font-size: 13px;
+		padding-left: 9px;
 
 		&:hover {
 			background-color: #292929;
@@ -43,12 +51,16 @@
 	}
 
 	.closeButton {
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		width: 30px;
-		height: 24px;
-		cursor: pointer;
+		@include iconButton;
 		padding-right: 9px;
+	}
+
+	.settingsButton {
+		@include iconButton;
+	}
+
+	.backButton {
+		@include iconButton;
+		padding-left: 9px;
 	}
 }

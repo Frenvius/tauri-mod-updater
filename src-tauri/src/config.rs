@@ -19,6 +19,14 @@ async fn get_config_file() -> Result<String, io::Error> {
 }
 
 #[tauri::command]
+pub async fn get_config_data() -> Result<String, String> {
+    match get_config_file().await {
+        Ok(config) => Ok(config),
+        Err(e) => Err(e.to_string())
+    }
+}
+
+#[tauri::command]
 pub async fn get_config(key: &str) -> Result<Option<Value>, String> {
     match get_config_file().await {
         Ok(config) => {

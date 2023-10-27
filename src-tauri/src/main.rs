@@ -31,6 +31,7 @@ fn main() {
             get_current_hash,
             config::get_config,
             config::set_config,
+            config::get_config_data,
             config::reset_config_file,
             utilities::set_log,
             utilities::play_locked,

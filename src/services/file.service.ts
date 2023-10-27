@@ -26,14 +26,14 @@ class FileService {
 	];
 
 	async unpack() {
-		const path = await invoke('get_config', { key: 'valheim-path' });
+		const path = await invoke('get_config', { key: 'valheimPath' });
 		return Command.create('robocopy', [`${path}\\updater`, `${path}`, '/E', '/XD', '.git'], {
 			encoding: 'utf8'
 		}).execute();
 	}
 
 	async uninstall(sendMessage: boolean = true) {
-		const path = await invoke('get_config', { key: 'valheim-path' });
+		const path = await invoke('get_config', { key: 'valheimPath' });
 		sendMessage && stateService.setUninstalling();
 		for (const file of this.fileList) {
 			await this.removeIfExists(`${path}\\${file.name}`, file, sendMessage);
@@ -54,7 +54,7 @@ class FileService {
 	}
 
 	async checkIfInstalled() {
-		const path = await invoke('get_config', { key: 'valheim-path' });
+		const path = await invoke('get_config', { key: 'valheimPath' });
 		return await exists(`${path}\\BepInEx`);
 	}
 }

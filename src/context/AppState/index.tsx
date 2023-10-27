@@ -10,7 +10,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, updateData,
 	const [playText, setPlayText] = React.useState('Play');
 	const [appVersion, setAppVersion] = React.useState('');
 	const [gitProgress, setGitProgress] = React.useState(0);
-	const [valheimPath, setPath] = React.useState(config['valheim-path']);
+	const [valheimPath, setPath] = React.useState(config.valheimPath);
 	const [playDisabled, setPlayDisabled] = React.useState(false);
 	const [statusText, setStatusText] = React.useState('Checking for updates...');
 	const [needsUpdate, setNeedsUpdate] = React.useState(config.update || false);
@@ -19,7 +19,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, updateData,
 
 	const setValheimPath = (path: string): void => {
 		setPath(path);
-		setConfig('valheim-path', path);
+		setConfig('valheimPath', path);
 	};
 
 	const setConfig = (key: string, value: string | boolean): void => {

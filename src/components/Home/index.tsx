@@ -1,7 +1,9 @@
 import React from 'react';
 import { Grid, Tooltip } from '@mui/material';
 import { getCurrent } from '@tauri-apps/api/window';
+import { invoke } from '@tauri-apps/api/primitives';
 import { relaunch } from '@tauri-apps/plugin-process';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import styles from './styles.module.scss';
 import LogPanel from '~/components/LogPanel';
@@ -14,7 +16,10 @@ import { AppStateContext } from '~/context/AppState/constants';
 import LinearProgressWithLabel from '~/components/common/LinearProgressWithLabel';
 
 const Home = () => {
+	const location = useLocation();
+	const navigate = useNavigate();
 	const { setLog } = React.useContext(LogContext);
+	const [state] = React.useState(location.state || {});
 	const { update } = React.useContext(AppStateContext);
 	const { valheimPath, setValheimPath } = React.useContext(AppStateContext);
 	const { gitProgress, appVersion } = React.useContext(AppStateContext);
@@ -78,10 +83,10 @@ const Home = () => {
 	const checkValheimProcess = (valheimPath: string, sendMessage = true): void => {
 		if (valheimPath) {
 			fileService.checkIfInstalled().then((exists) => {
-				if (!exists) {
-					stateService.setNotInstalled();
-				} else {
+				if (exists) {
 					checkForUpdates();
+				} else {
+					stateService.setNotInstalled();
 				}
 			});
 		} else {
@@ -110,16 +115,24 @@ const Home = () => {
 	};
 
 	React.useEffect(() => {
-		stateService.setPlayDisabled(true);
-		getCurrent()
-			.listen('git_clone_progress', ({ payload }) => progress(payload as number))
-			.then((unlisten) => unlisten);
-		getCurrent()
-			.listen('git_pull_progress', ({ payload }) => progress(payload as number))
-			.then((unlisten) => unlisten);
+		navigate('.', { replace: true });
+		invoke('get_config', { key: 'repoUrl' }).then((res) => {
+			if (!res) {
+				navigate('/settings');
+			}
+		});
+		if (state?.from !== 'settings') {
+			stateService.setPlayDisabled(true);
+			getCurrent()
+				.listen('git_clone_progress', ({ payload }) => progress(payload as number))
+				.then((unlisten) => unlisten);
+			getCurrent()
+				.listen('git_pull_progress', ({ payload }) => progress(payload as number))
+				.then((unlisten) => unlisten);
 
-		checkModUpdate();
-		checkValheimProcess(valheimPath, false);
+			checkModUpdate();
+			checkValheimProcess(valheimPath, false);
+		}
 	}, []);
 
 	const hasUpdate = update?.currentVersion !== update?.version;

@@ -1,3 +1,5 @@
+@import '../../styles/global.scss';
+
 .container {
 	padding: 10px;
 
@@ -7,14 +9,12 @@
 		justify-content: space-between;
 
 		div:first-child {
-			font-family: Microsoft Sans Serif, Segoe UI, sans-serif;
 			color: #d2d2d2;
 			font-size: 12px;
 			letter-spacing: -0.2px;
 		}
 
 		.updateButton {
-			font-family: Microsoft Sans Serif, Segoe UI, sans-serif;
 			color: #646464;
 			font-size: 12px;
 			letter-spacing: -0.2px;
@@ -27,37 +27,7 @@
 	}
 
 	.playButton {
-		background-color: #323232;
-		width: 100%;
-		height: 100%;
-		border: 1px solid #646464;
-		color: #d2d2d2;
-		text-transform: uppercase;
-		font-family: Microsoft Sans Serif, Segoe UI, sans-serif;
-		font-size: 12px;
-		letter-spacing: -0.2px;
-		cursor: pointer;
-
-		&:hover {
-			background-color: #3c3c3c;
-		}
-
-		&:active {
-			background-color: #898989;
-		}
-
-		&:disabled {
-			opacity: 0.5;
-			cursor: not-allowed;
-
-			&:hover {
-				background-color: #323232;
-			}
-
-			&:active {
-				background-color: #323232;
-			}
-		}
+		@include actionButton;
 	}
 
 	.notification {

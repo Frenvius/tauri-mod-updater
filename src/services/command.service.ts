@@ -10,7 +10,7 @@ class CommandService {
 	}
 
 	async openValheimFolder() {
-		const path: string = await invoke('get_config', { key: 'valheim-path' });
+		const path: string = await invoke('get_config', { key: 'valheimPath' });
 		if (path) {
 			await Command.create('explorer', [path]).execute();
 		}
