@@ -18,7 +18,6 @@ class GitService {
 		await fileService.uninstall(false);
 		return await invoke('git_clone', { url: url, path: `${path}\\updater`, window: getCurrent() }).catch(async (err) => {
 			if (err.includes('already exists') || err.includes('exists and is not an empty')) {
-				await fileService.uninstall(false);
 				await this.clone();
 			}
 		});

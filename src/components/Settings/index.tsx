@@ -12,13 +12,14 @@ const Settings = () => {
 	const navigate = useNavigate();
 	const { setValheimPath } = React.useContext(AppStateContext);
 	const [config, setConfig] = React.useState(initConfig);
-	const [repoUrl, setRepoUrl] = React.useState<string>('');
+	const { repoUrl, setRepoUrl } = React.useContext(AppStateContext);
+	const [repo, setRepo] = React.useState<string>('');
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const [isRepoUrlSet, setIsRepoUrlSet] = React.useState<boolean>(false);
 	const [valheimPathState, setValheimPathState] = React.useState<string>('');
 
 	const handleRepoUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRepoUrl(event.target.value);
+		setRepo(event.target.value);
 	};
 
 	const handleValheimPathChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,15 +31,15 @@ const Settings = () => {
 			const configData = JSON.parse(res as string);
 			setConfig(configData);
 			setIsRepoUrlSet(!!configData.repoUrl);
-			setRepoUrl(configData.repoUrl || initConfig.repoUrl);
+			setRepo(configData.repoUrl || repoUrl || initConfig.repoUrl);
 			setValheimPathState(configData.valheimPath || initConfig.valheimPath);
 		});
 	}, []);
 
 	const saveSettings = async () => {
 		setIsLoading(true);
-		setValheimPath(valheimPathState);
-		await invoke('set_config', { key: 'repoUrl', value: repoUrl });
+		await setRepoUrl(repo);
+		await setValheimPath(valheimPathState);
 		navigate('/', { state: { from: !isRepoUrlSet ? '' : 'settings' } });
 	};
 
@@ -59,7 +60,7 @@ const Settings = () => {
 							<TextField
 								fullWidth
 								size="small"
-								value={repoUrl}
+								value={repo}
 								variant="outlined"
 								label="Repository Url"
 								disabled={isLoading}

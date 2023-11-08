@@ -3,8 +3,8 @@ import { invoke } from '@tauri-apps/api/primitives';
 import { getCurrent } from '@tauri-apps/api/window';
 
 class CommandService {
-	startGame() {
-		invoke('run_game_windows', { exec: '/C start steam://rungameid/892970' }).then(async () => {
+	async startGame() {
+		await invoke('run_game_windows', { exec: '/C start steam://rungameid/892970' }).then(async () => {
 			await invoke('set_log', { message: `-> Starting Valheim...`, window: getCurrent() });
 		});
 	}
@@ -17,13 +17,22 @@ class CommandService {
 	}
 
 	async findValheimProcess() {
-		const result = await Command.create('wmic', ['process', 'where', "name='Valheim.exe'", 'get', 'ExecutablePath'], {
-			encoding: 'utf8'
-		}).execute();
+		let isPathValid: RegExpMatchArray | null = null;
+		let executablePath = '';
 
-		const executableDir = result.stdout.replace('ExecutablePath', '').trim();
-		const executablePath = executableDir.replace('\\valheim.exe', '');
-		const isPathValid = this.pathChecker(executableDir);
+		while (!isPathValid) {
+			const result = await Command.create('wmic', ['process', 'where', "name='Valheim.exe'", 'get', 'ExecutablePath'], {
+				encoding: 'utf8'
+			}).execute();
+
+			const executableDir = result.stdout.replace('ExecutablePath', '').trim();
+			executablePath = executableDir.replace('\\valheim.exe', '');
+			isPathValid = this.pathChecker(executableDir);
+
+			if (!isPathValid) {
+				await new Promise((resolve) => setTimeout(resolve, 1000)); // waits for 5 seconds
+			}
+		}
 
 		return { isPathValid, executablePath };
 	}
@@ -32,17 +41,6 @@ class CommandService {
 		return Command.create('taskkill', ['/f', '/im', 'Valheim.exe'], {
 			encoding: 'utf8'
 		}).execute();
-	}
-
-	async readEnvVariable(variableName: string): Promise<string> {
-		const commandResult = await Command.create('echo', [`%${variableName}%`], {
-			encoding: 'utf8'
-		}).execute();
-		if (commandResult.code !== 0) {
-			throw new Error(commandResult.stderr);
-		}
-
-		return commandResult.stdout.trim();
 	}
 
 	pathChecker = (path: string) => {

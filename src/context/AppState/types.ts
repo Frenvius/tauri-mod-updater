@@ -5,6 +5,7 @@ export type ProgressType = 'determinate' | 'indeterminate' | 'buffer' | 'query' 
 
 export interface AppStateContextProps {
 	update: Update | null;
+	repoUrl: string;
 	playText: string;
 	statusText: string;
 	appVersion: string;
@@ -14,7 +15,8 @@ export interface AppStateContextProps {
 	needsUpdate: boolean;
 	playDisabled: boolean;
 	progressType: ProgressType;
-	setValheimPath: (path: string) => void;
+	setRepoUrl: (url: string) => Promise<void>;
+	setValheimPath: (path: string) => Promise<void>;
 }
 
 export interface Config {

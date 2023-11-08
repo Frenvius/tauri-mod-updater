@@ -1,7 +1,5 @@
 import React from 'react';
 import { Grid, Tooltip } from '@mui/material';
-import { getCurrent } from '@tauri-apps/api/window';
-import { invoke } from '@tauri-apps/api/primitives';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -20,8 +18,8 @@ const Home = () => {
 	const navigate = useNavigate();
 	const { setLog } = React.useContext(LogContext);
 	const [state] = React.useState(location.state || {});
-	const { update } = React.useContext(AppStateContext);
 	const { valheimPath, setValheimPath } = React.useContext(AppStateContext);
+	const { update, repoUrl } = React.useContext(AppStateContext);
 	const { gitProgress, appVersion } = React.useContext(AppStateContext);
 	const { statusText, playDisabled } = React.useContext(AppStateContext);
 	const { isInstalled, needsUpdate } = React.useContext(AppStateContext);
@@ -29,10 +27,10 @@ const Home = () => {
 
 	const playButton = async () => {
 		if (isInstalled) checkForUpdates(false);
-		if (needsUpdate) await updateRepo();
+		if (needsUpdate) return await updateRepo();
 
 		if (isInstalled && !needsUpdate) {
-			commandService.startGame();
+			await commandService.startGame();
 		} else {
 			await cloneRepo();
 		}
@@ -53,7 +51,7 @@ const Home = () => {
 	const unpackRepo = async (res: string, clean: boolean = false): Promise<void> => {
 		if (res === 'done') {
 			stateService.setUnpacking();
-			clean && (await fileService.uninstall(false));
+			clean && (await fileService.uninstall(false, true));
 			const result = await fileService.unpack();
 			if (!result.stderr) stateService.setInstalled();
 		}
@@ -69,18 +67,7 @@ const Home = () => {
 		});
 	};
 
-	const checkModUpdate = () => {
-		const interval = setInterval(() => {
-			if (isInstalled) {
-				checkForUpdates(false);
-				clearInterval(interval);
-			}
-		}, 30000);
-	};
-
-	const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-	const checkValheimProcess = (valheimPath: string, sendMessage = true): void => {
+	const checkValheimProcess = (valheimPath: string): void => {
 		if (valheimPath) {
 			fileService.checkIfInstalled().then((exists) => {
 				if (exists) {
@@ -90,48 +77,40 @@ const Home = () => {
 				}
 			});
 		} else {
-			commandService.findValheimProcess().then(async ({ isPathValid, executablePath }) => {
-				if (isPathValid) {
-					setValheimPath(executablePath || valheimPath);
-					commandService.killValheimProcess().then(async () => {
-						setLog('-> Valheim is already running!');
-						setLog('-> Valheim path set!');
-						await cloneRepo(executablePath);
-					});
-				} else {
-					stateService.setOpenValheim(sendMessage);
-					await sleep(2000);
-					checkValheimProcess(valheimPath);
-				}
+			commandService.startGame().then(async () => {
+				commandService.findValheimProcess().then(async ({ isPathValid, executablePath }) => {
+					if (isPathValid) {
+						await setValheimPath(executablePath || valheimPath);
+						commandService.killValheimProcess().then(async () => {
+							setLog('-> Valheim path set!');
+							stateService.setNotInstalled();
+						});
+					}
+				});
 			});
 		}
 	};
 
-	const progress = (value: number) => {
-		if (value < 100) {
-			stateService.setGitProgress(value);
-			stateService.setStatusText(`Downloading ${value}%`);
+	React.useEffect(() => {
+		if (!needsUpdate) {
+			const interval = setInterval(() => {
+				if (isInstalled) {
+					checkForUpdates(false);
+				}
+			}, 3000);
+			return () => clearInterval(interval);
 		}
-	};
+	}, [needsUpdate, isInstalled]);
 
 	React.useEffect(() => {
 		navigate('.', { replace: true });
-		invoke('get_config', { key: 'repoUrl' }).then((res) => {
-			if (!res) {
-				navigate('/settings');
-			}
-		});
-		if (state?.from !== 'settings') {
-			stateService.setPlayDisabled(true);
-			getCurrent()
-				.listen('git_clone_progress', ({ payload }) => progress(payload as number))
-				.then((unlisten) => unlisten);
-			getCurrent()
-				.listen('git_pull_progress', ({ payload }) => progress(payload as number))
-				.then((unlisten) => unlisten);
+		if (!repoUrl) {
+			navigate('/settings');
+		}
 
-			checkModUpdate();
-			checkValheimProcess(valheimPath, false);
+		if (state?.from !== 'settings' && !!repoUrl) {
+			stateService.setPlayDisabled(true);
+			checkValheimProcess(valheimPath);
 		}
 	}, []);
 

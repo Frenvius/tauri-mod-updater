@@ -26,8 +26,8 @@ const MenuOptions: React.FC<MenuOptionsProps> = ({ anchorEl, setAnchorEl }) => {
 		handleClose();
 	};
 
-	const handleOpenGame = () => {
-		commandService.startGame();
+	const handleOpenGame = async () => {
+		await commandService.startGame();
 		handleClose();
 	};
 

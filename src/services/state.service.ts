@@ -4,6 +4,7 @@ import { getCurrent } from '@tauri-apps/api/window';
 class StateService {
 	setInstalled = () => {
 		this.dispatch('is_installed', true);
+		this.dispatch('needs_update', false);
 		this.dispatch('play_text', 'Play');
 		this.dispatch('play_locked', false);
 		this.dispatch('progress_type', 'determinate');

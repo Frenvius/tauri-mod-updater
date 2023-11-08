@@ -45,9 +45,11 @@ const TitleBar: React.FC = () => {
 					<SettingsIcon sx={{ fontSize: 15, color: '#d2d2d2' }} />
 				</button>
 			)}
-			<button className={`${styles.btn} ${styles.closeButton}`} onClick={() => getCurrent().close()}>
-				<CloseIcon sx={{ fontSize: 15, color: '#d2d2d2' }} />
-			</button>
+			{!isSettingWindowOpen && (
+				<button className={`${styles.btn} ${styles.closeButton}`} onClick={() => getCurrent().close()}>
+					<CloseIcon sx={{ fontSize: 15, color: '#d2d2d2' }} />
+				</button>
+			)}
 		</div>
 	);
 };

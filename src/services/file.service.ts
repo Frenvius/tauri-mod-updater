@@ -32,10 +32,11 @@ class FileService {
 		}).execute();
 	}
 
-	async uninstall(sendMessage: boolean = true) {
+	async uninstall(sendMessage: boolean = true, update: boolean = false) {
 		const path = await invoke('get_config', { key: 'valheimPath' });
 		sendMessage && stateService.setUninstalling();
 		for (const file of this.fileList) {
+			if (file.name === 'updater' && update) continue;
 			await this.removeIfExists(`${path}\\${file.name}`, file, sendMessage);
 		}
 		sendMessage && stateService.setUninstalled();

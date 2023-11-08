@@ -4,6 +4,7 @@ import { AppStateContextProps } from '~/context/AppState/types.ts';
 
 const initialState: AppStateContextProps = {
 	update: null,
+	repoUrl: '',
 	playText: '',
 	appVersion: '',
 	statusText: '',
@@ -13,7 +14,8 @@ const initialState: AppStateContextProps = {
 	needsUpdate: false,
 	playDisabled: false,
 	progressType: undefined,
-	setValheimPath: () => {}
+	setRepoUrl: async () => {},
+	setValheimPath: async () => {}
 };
 
 export const AppStateContext = createContext<AppStateContextProps>(initialState);
