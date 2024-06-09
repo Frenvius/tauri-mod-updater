@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { AppStateContextProps } from './types';
+import { Config, AppStateContextProps } from './types';
 
 const initialState: AppStateContextProps = {
 	repoUrl: '',
@@ -12,6 +12,7 @@ const initialState: AppStateContextProps = {
 	isInstalled: false,
 	needsUpdate: false,
 	playDisabled: false,
+	config: {} as Config,
 	progressType: undefined,
 	setRepoUrl: async () => {}
 };

@@ -12,7 +12,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, children, u
 	const [appVersion, setAppVersion] = React.useState('');
 	const [gitProgress, setGitProgress] = React.useState(0);
 	const [playDisabled, setPlayDisabled] = React.useState(false);
-	const [statusText, setStatusText] = React.useState('Checking for updates...');
+	const [statusText, setStatusText] = React.useState('Ready to play');
 	const [needsUpdate, setNeedsUpdate] = React.useState(config.update || false);
 	const [isInstalled, setIsInstalled] = React.useState(config.installed || false);
 	const [progressType, setProgressType] = React.useState('determinate' as ProgressType);
@@ -76,6 +76,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, children, u
 	return (
 		<AppStateContext.Provider
 			value={{
+				config,
 				repoUrl,
 				playText,
 				setRepoUrl,

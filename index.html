@@ -5,78 +5,9 @@
 		<link rel="icon" type="image/ico" href="/icon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Mod Updater</title>
-		<script async defer>
-			const { invoke } = window.__TAURI__.core;
-
-			async function readJson() {
-				let jsonData;
-				const data = await invoke('get_initial_data');
-
-				try {
-					jsonData = JSON.parse(data);
-				} catch (error) {
-					const fileData = await invoke('config_folder');
-					jsonData = JSON.parse(fileData);
-				}
-
-				return jsonData;
-			}
-
-			(async () => {
-				window.updaterConfig = (await readJson()) || {};
-			})();
-		</script>
-		<style>
-			body,
-			html {
-				margin: 0;
-				padding: 0;
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-				background-color: #262626;
-			}
-			.loader-container {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				height: 100%;
-			}
-
-			.loader {
-				margin-top: -3px;
-				border: 6px solid #323232;
-				border-top: 6px solid #646464;
-				border-radius: 50%;
-				width: 50px;
-				height: 50px;
-				animation: spin 1.2s linear infinite;
-			}
-
-			@keyframes spin {
-				0% {
-					transform: rotate(0deg);
-				}
-				100% {
-					transform: rotate(360deg);
-				}
-			}
-		</style>
 	</head>
 	<body>
 		<div id="root"></div>
-		<div class="loader-container">
-			<div class="loader"></div>
-		</div>
 		<script type="module" src="/src/main.tsx"></script>
-		<script>
-			function checkRoot() {
-				const rootElement = document.getElementById('root');
-				if (rootElement && !rootElement.hasChildNodes()) {
-					location.reload();
-				}
-			}
-			setInterval(checkRoot, 1000);
-		</script>
 	</body>
 </html>

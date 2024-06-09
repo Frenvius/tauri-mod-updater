@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Grid, Button, Tooltip } from '@mui/material';
 import { relaunch } from '@tauri-apps/plugin-process';
 
@@ -12,7 +11,6 @@ import { AppStateContext } from '~/context/AppState/constants';
 import LinearProgressWithLabel from '~/components/common/LinearProgressWithLabel';
 
 const Home = () => {
-	const navigate = useNavigate();
 	const { update, repoUrl } = React.useContext(AppStateContext);
 	const { appVersion, gitProgress } = React.useContext(AppStateContext);
 	const { statusText, playDisabled } = React.useContext(AppStateContext);
@@ -75,7 +73,6 @@ const Home = () => {
 	};
 
 	React.useEffect(() => {
-		if (!repoUrl) navigate('/settings', { replace: true });
 		if (repoUrl) checkForUpdates();
 	}, []);
 

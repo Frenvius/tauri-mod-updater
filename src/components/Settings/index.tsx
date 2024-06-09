@@ -6,10 +6,14 @@ import { Grid, Alert, TextField, Typography } from '@mui/material';
 import styles from './styles.module.scss';
 import { AppStateContext } from '~/context/AppState/constants';
 
-const Settings = () => {
+interface SettingsProps {
+	refresh?: boolean;
+}
+
+const Settings = ({ refresh }: SettingsProps) => {
 	const navigate = useNavigate();
 	const { repoUrl, setRepoUrl } = React.useContext(AppStateContext);
-	const [repo, setRepo] = React.useState<string>(repoUrl);
+	const [repo, setRepo] = React.useState<string>(repoUrl || '');
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
 	const handleRepoUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +24,7 @@ const Settings = () => {
 		setIsLoading(true);
 		await setRepoUrl(repo);
 		navigate('/');
+		refresh && navigate(0);
 	};
 
 	return (

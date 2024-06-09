@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { invoke } from '@tauri-apps/api/core';
 import { check, Update } from '@tauri-apps/plugin-updater';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
@@ -11,15 +12,11 @@ import Settings from '~/components/Settings';
 import { Config } from '~/context/AppState/types';
 import TitleBar from '~/components/common/TitleBar';
 
-interface MainProps {
-	configData: Config;
-}
-
 const darkTheme = createTheme({ palette: { mode: 'dark', background: { default: '#262626' } } });
 
-const ModUpdater: React.FC<MainProps> = ({ configData }) => {
+const ModUpdater = () => {
 	const [update, setUpdate] = React.useState<null | Update>(null);
-	const [config, setConfig] = React.useState<Config>(configData || {});
+	const [config, setConfig] = React.useState<Config>({} as Config);
 
 	if (typeof window !== 'undefined') {
 		document.onkeydown = function (e) {
@@ -34,6 +31,10 @@ const ModUpdater: React.FC<MainProps> = ({ configData }) => {
 	}
 
 	React.useEffect(() => {
+		invoke('get_initial_data').then((data) => {
+			setConfig(JSON.parse(data as string));
+		});
+
 		const interval = setInterval(async () => {
 			const update = await check();
 			setUpdate(update);
@@ -44,15 +45,13 @@ const ModUpdater: React.FC<MainProps> = ({ configData }) => {
 		};
 	}, []);
 
-	React.useEffect(() => {
-		setConfig(configData);
-	}, [configData]);
+	const isConfigEmpty = Object.keys(config).length === 0;
 
 	return (
 		<BrowserRouter>
-			{config && (
-				<ThemeProvider theme={darkTheme}>
-					<CssBaseline />
+			<ThemeProvider theme={darkTheme}>
+				<CssBaseline />
+				{!isConfigEmpty && !!config.repoUrl && (
 					<AppProviders data={config} update={update}>
 						<TitleBar />
 						<Routes>
@@ -60,11 +59,16 @@ const ModUpdater: React.FC<MainProps> = ({ configData }) => {
 							<Route path="/settings" Component={Settings} />
 						</Routes>
 					</AppProviders>
-				</ThemeProvider>
-			)}
+				)}
+				{isConfigEmpty && !config.repoUrl && (
+					<AppProviders data={config} update={update}>
+						<TitleBar />
+						<Settings refresh />
+					</AppProviders>
+				)}
+			</ThemeProvider>
 		</BrowserRouter>
 	);
 };
 
-const { updaterConfig } = window as never;
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<ModUpdater configData={updaterConfig} />);
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<ModUpdater />);

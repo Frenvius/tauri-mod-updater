@@ -4,6 +4,7 @@ import { Update } from '@tauri-apps/plugin-updater';
 export type ProgressType = 'query' | 'buffer' | undefined | 'determinate' | 'indeterminate';
 
 export interface AppStateContextProps {
+	config: Config;
 	repoUrl: string;
 	playText: string;
 	statusText: string;
