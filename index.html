@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Mod Updater</title>
 		<script async defer>
-			const { invoke } = window.__TAURI__.primitives;
+			const { invoke } = window.__TAURI__.core;
 
 			async function readJson() {
 				let jsonData;
@@ -15,7 +15,7 @@
 				try {
 					jsonData = JSON.parse(data);
 				} catch (error) {
-					const fileData = await invoke('get_config', { key: 'valheimPath' });
+					const fileData = await invoke('config_folder');
 					jsonData = JSON.parse(fileData);
 				}
 

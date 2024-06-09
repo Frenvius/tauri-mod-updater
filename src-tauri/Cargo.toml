@@ -1,32 +1,26 @@
 [package]
 name = "valheim-mod-updater"
-version = "1.0.7"
+version = "1.0.8"
 description = "Mod Updater"
 authors = ["Frenvius"]
-license = ""
-repository = ""
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-alpha", features = [] }
+tauri-build = { version = "2.0.0-beta", features = [] }
 
 [dependencies]
+dirs = "5.0.1"
 git2 = "0.18.1"
 thiserror = "*"
+serde_json = "1"
 whoami = "1.4.1"
-serde_json = "1.0"
 html_parser = "0.7.0"
-tauri-plugin-fs = "2.0.0-alpha"
-tauri-plugin-shell = "2.0.0-alpha"
-tauri-plugin-window = "2.0.0-alpha"
-tauri-plugin-updater = "2.0.0-alpha"
-tauri-plugin-process = "2.0.0-alpha"
-serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "2.0.0-alpha", features = [] }
-
-[features]
-# this feature is used for production builds or when `devPath` points to the filesystem
-# DO NOT REMOVE!!
-custom-protocol = ["tauri/custom-protocol"]
+sysinfo = "=0.30.12"
+tauri-plugin-fs = "2.0.0-beta"
+tauri-plugin-shell = "2.0.0-beta"
+tauri-plugin-updater = "2.0.0-beta"
+tauri-plugin-process = "2.0.0-beta"
+serde = { version = "1", features = ["derive"] }
+tauri = { version = "2.0.0-beta", features = [] }

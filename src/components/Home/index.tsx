@@ -1,32 +1,26 @@
 import React from 'react';
-import { Grid, Tooltip } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Grid, Button, Tooltip } from '@mui/material';
 import { relaunch } from '@tauri-apps/plugin-process';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import styles from './styles.module.scss';
 import LogPanel from '~/components/LogPanel';
 import { gitService } from '~/services/git.service';
-import { fileService } from '~/services/file.service';
 import { stateService } from '~/services/state.service';
 import { commandService } from '~/services/command.service';
-import { LogContext } from '~/context/LogContext/constants';
 import { AppStateContext } from '~/context/AppState/constants';
 import LinearProgressWithLabel from '~/components/common/LinearProgressWithLabel';
 
 const Home = () => {
-	const location = useLocation();
 	const navigate = useNavigate();
-	const { setLog } = React.useContext(LogContext);
-	const [state] = React.useState(location.state || {});
-	const { valheimPath, setValheimPath } = React.useContext(AppStateContext);
 	const { update, repoUrl } = React.useContext(AppStateContext);
-	const { gitProgress, appVersion } = React.useContext(AppStateContext);
+	const { appVersion, gitProgress } = React.useContext(AppStateContext);
 	const { statusText, playDisabled } = React.useContext(AppStateContext);
 	const { isInstalled, needsUpdate } = React.useContext(AppStateContext);
 	const { playText, progressType } = React.useContext(AppStateContext);
 
 	const playButton = async () => {
-		if (isInstalled) checkForUpdates(false);
+		if (isInstalled) await checkForUpdates(false);
 		if (needsUpdate) return await updateRepo();
 
 		if (isInstalled && !needsUpdate) {
@@ -36,58 +30,29 @@ const Home = () => {
 		}
 	};
 
-	const cloneRepo = async (executablePath?: string): Promise<void> => {
-		stateService.setDownloading();
-		const res = await gitService.clone(executablePath);
-		await unpackRepo(res as string);
+	const cloneRepo = async (): Promise<void> => {
+		await stateService.setDownloading();
+		await gitService.clone();
+		await stateService.setInstalled();
 	};
 
 	const updateRepo = async (): Promise<void> => {
-		stateService.setUpdating();
-		const res = await gitService.pull();
-		await unpackRepo(res as string, true);
+		await stateService.setUpdating();
+		await gitService.pull();
+		await stateService.setInstalled();
 	};
 
-	const unpackRepo = async (res: string, clean: boolean = false): Promise<void> => {
-		if (res === 'done') {
-			stateService.setUnpacking();
-			clean && (await fileService.uninstall(false, true));
-			const result = await fileService.unpack();
-			if (!result.stderr) stateService.setInstalled();
+	const checkForUpdates = async (showMessage = true): Promise<void> => {
+		const isUpdated = await gitService.checkLastCommit();
+
+		if (isUpdated === null) {
+			await stateService.setNotInstalled();
+			return;
 		}
-	};
-
-	const checkForUpdates = (showMessage = true): void => {
-		gitService.checkLastCommit().then((isUpdated) => {
-			if (isUpdated) {
-				stateService.setReady(showMessage);
-			} else {
-				stateService.setUpdateAvailable(showMessage);
-			}
-		});
-	};
-
-	const checkValheimProcess = (valheimPath: string): void => {
-		if (valheimPath) {
-			fileService.checkIfInstalled().then((exists) => {
-				if (exists) {
-					checkForUpdates();
-				} else {
-					stateService.setNotInstalled();
-				}
-			});
+		if (isUpdated) {
+			await stateService.setReady(showMessage);
 		} else {
-			commandService.startGame().then(async () => {
-				commandService.findValheimProcess().then(async ({ isPathValid, executablePath }) => {
-					if (isPathValid) {
-						await setValheimPath(executablePath || valheimPath);
-						commandService.killValheimProcess().then(async () => {
-							setLog('-> Valheim path set!');
-							stateService.setNotInstalled();
-						});
-					}
-				});
-			});
+			await stateService.setUpdateAvailable(showMessage);
 		}
 	};
 
@@ -97,22 +62,10 @@ const Home = () => {
 				if (isInstalled) {
 					checkForUpdates(false);
 				}
-			}, 3000);
+			}, 5000);
 			return () => clearInterval(interval);
 		}
 	}, [needsUpdate, isInstalled]);
-
-	React.useEffect(() => {
-		navigate('.', { replace: true });
-		if (!repoUrl) {
-			navigate('/settings');
-		}
-
-		if (state?.from !== 'settings' && !!repoUrl) {
-			stateService.setPlayDisabled(true);
-			checkValheimProcess(valheimPath);
-		}
-	}, []);
 
 	const hasUpdate = update?.currentVersion !== update?.version;
 
@@ -121,15 +74,20 @@ const Home = () => {
 		await relaunch();
 	};
 
+	React.useEffect(() => {
+		if (!repoUrl) navigate('/settings', { replace: true });
+		if (repoUrl) checkForUpdates();
+	}, []);
+
 	return (
 		<div className={styles.container}>
 			<LogPanel />
 			<Grid container spacing={0.5}>
-				<Grid className={styles.statusText} item xs={12}>
+				<Grid item xs={12} className={styles.statusText}>
 					<div>Status: {statusText}</div>
 					<div onClick={handleUpdate} className={styles.updateButton}>
 						{hasUpdate ? (
-							<Tooltip title="Click to update" placement="top">
+							<Tooltip placement="top" title="Click to update">
 								<div className={styles.link}>
 									{appVersion} &#8594; {update?.version}
 								</div>
@@ -140,12 +98,12 @@ const Home = () => {
 					</div>
 				</Grid>
 				<Grid item xs={8.5}>
-					<LinearProgressWithLabel variant={progressType} value={gitProgress} />
+					<LinearProgressWithLabel value={gitProgress} variant={progressType} />
 				</Grid>
 				<Grid item xs={3.5}>
-					<button className={styles.playButton} onClick={playButton} disabled={playDisabled}>
+					<Button onClick={playButton} disabled={playDisabled} className={styles.playButton}>
 						{playText}
-					</button>
+					</Button>
 				</Grid>
 			</Grid>
 		</div>

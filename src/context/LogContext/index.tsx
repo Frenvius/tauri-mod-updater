@@ -1,9 +1,8 @@
-import type { LogProviderProps } from '~/context/LogContext/types.ts';
-
 import React, { useState } from 'react';
 import { getCurrent } from '@tauri-apps/api/window';
 
-import { LogContext } from '~/context/LogContext/constants.tsx';
+import { LogContext } from './constants';
+import { LogProviderProps } from './types';
 
 const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
 	const [logs, setLogs] = useState<string[]>(['----- Valheim Launcher -----']);

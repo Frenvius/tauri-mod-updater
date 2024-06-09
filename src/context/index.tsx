@@ -1,10 +1,8 @@
-import React from 'react';
-
 import LogProvider from '~/context/LogContext';
 import AppStateProvider from '~/context/AppState';
-import { AppProvidersProps } from '~/context/types.ts';
+import { AppProvidersProps } from '~/context/types';
 
-const AppProviders: React.FC<AppProvidersProps> = ({ data, update, children }) => {
+const AppProviders = ({ data, update, children }: AppProvidersProps) => {
 	return (
 		<LogProvider>
 			<AppStateProvider config={data} updateData={update}>

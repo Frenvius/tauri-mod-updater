@@ -5,28 +5,22 @@ import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 
 import './styles/global.scss';
-import Home from '~/components/Home';
 import AppProviders from '~/context';
+import Home from '~/components/Home';
 import Settings from '~/components/Settings';
+import { Config } from '~/context/AppState/types';
 import TitleBar from '~/components/common/TitleBar';
-import { Config } from '~/context/AppState/types.ts';
-
-const darkTheme = createTheme({
-	palette: {
-		background: {
-			default: '#262626'
-		},
-		mode: 'dark'
-	}
-});
 
 interface MainProps {
 	configData: Config;
 }
 
+const darkTheme = createTheme({ palette: { mode: 'dark', background: { default: '#262626' } } });
+
 const ModUpdater: React.FC<MainProps> = ({ configData }) => {
-	const [update, setUpdate] = React.useState<Update | null>(null);
+	const [update, setUpdate] = React.useState<null | Update>(null);
 	const [config, setConfig] = React.useState<Config>(configData || {});
+
 	if (typeof window !== 'undefined') {
 		document.onkeydown = function (e) {
 			if (e.which === 116) {
@@ -39,10 +33,16 @@ const ModUpdater: React.FC<MainProps> = ({ configData }) => {
 		});
 	}
 
-	(async () => {
-		const update = await check();
-		setUpdate(update);
-	})();
+	React.useEffect(() => {
+		const interval = setInterval(async () => {
+			const update = await check();
+			setUpdate(update);
+		}, 30000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	}, []);
 
 	React.useEffect(() => {
 		setConfig(configData);
@@ -66,5 +66,5 @@ const ModUpdater: React.FC<MainProps> = ({ configData }) => {
 	);
 };
 
-const { updaterConfig } = window as any;
+const { updaterConfig } = window as never;
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<ModUpdater configData={updaterConfig} />);

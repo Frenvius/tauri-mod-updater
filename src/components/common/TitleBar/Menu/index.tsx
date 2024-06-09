@@ -1,23 +1,23 @@
 import React from 'react';
-import { Menu, MenuItem } from '@mui/material';
+import { Menu } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
 
 import styles from './styles.module.scss';
+import { MenuOptionsProps } from './types';
 import { fileService } from '~/services/file.service';
-import { commandService } from '~/services/command.service.ts';
-import { AppStateContext } from '~/context/AppState/constants.ts';
-import { MenuOptionsProps } from '~/components/common/TitleBar/Menu/types.ts';
+import { commandService } from '~/services/command.service';
+import { AppStateContext } from '~/context/AppState/constants';
 
 const MenuOptions: React.FC<MenuOptionsProps> = ({ anchorEl, setAnchorEl }) => {
 	const open = Boolean(anchorEl);
-	const { isInstalled, valheimPath } = React.useContext(AppStateContext);
-	const { playDisabled, gitProgress } = React.useContext(AppStateContext);
+	const { isInstalled } = React.useContext(AppStateContext);
 
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
 
 	const handleOpenFolder = async () => {
-		await commandService.openValheimFolder();
+		await commandService.openConfigFolder();
 		handleClose();
 	};
 
@@ -26,18 +26,10 @@ const MenuOptions: React.FC<MenuOptionsProps> = ({ anchorEl, setAnchorEl }) => {
 		handleClose();
 	};
 
-	const handleOpenGame = async () => {
-		await commandService.startGame();
-		handleClose();
-	};
-
-	const isDownloading = gitProgress > 0 && gitProgress < 100;
-	const startGameDisabled = isInstalled ? playDisabled || isDownloading : isDownloading;
-
 	return (
 		<Menu
-			anchorEl={anchorEl}
 			open={open}
+			anchorEl={anchorEl}
 			onClose={handleClose}
 			anchorOrigin={{
 				vertical: 'top',
@@ -48,14 +40,11 @@ const MenuOptions: React.FC<MenuOptionsProps> = ({ anchorEl, setAnchorEl }) => {
 				horizontal: 'left'
 			}}
 		>
-			<MenuItem className={styles.menuItem} onClick={handleOpenGame} disabled={startGameDisabled}>
-				Start Game
+			<MenuItem disabled={!isInstalled} onClick={handleUninstall} className={styles.menuItem}>
+				Uninstall mods
 			</MenuItem>
-			<MenuItem className={styles.menuItem} onClick={handleUninstall} disabled={!isInstalled}>
-				Uninstall Mods
-			</MenuItem>
-			<MenuItem className={styles.menuItem} onClick={handleOpenFolder} disabled={!valheimPath}>
-				Open Valheim Folder
+			<MenuItem onClick={handleOpenFolder} className={styles.menuItem}>
+				Open config folder
 			</MenuItem>
 		</Menu>
 	);

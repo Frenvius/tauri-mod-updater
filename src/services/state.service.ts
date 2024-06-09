@@ -1,103 +1,88 @@
-import { invoke } from '@tauri-apps/api/primitives';
+import { invoke } from '@tauri-apps/api/core';
 import { getCurrent } from '@tauri-apps/api/window';
 
 class StateService {
-	setInstalled = () => {
-		this.dispatch('is_installed', true);
-		this.dispatch('needs_update', false);
-		this.dispatch('play_text', 'Play');
-		this.dispatch('play_locked', false);
-		this.dispatch('progress_type', 'determinate');
-		this.dispatch('git_progress', 100);
-		this.dispatch('status_text', 'Done!');
-		this.dispatch('set_log', '-> Mods installed!');
-		this.dispatch('set_log', '-> Ready to play!');
+	setStatusText = async (text: string) => {
+		await this.dispatch('status_text', text);
 	};
 
-	setDownloading = () => {
-		this.dispatch('status_text', 'Starting download...');
-		this.dispatch('set_log', '-> Downloading mods...');
-		this.dispatch('play_locked', true);
-		this.dispatch('play_text', 'Installing');
-		this.dispatch('is_installed', false);
-		this.dispatch('needs_update', false);
+	setGitProgress = async (progress: number) => {
+		await this.dispatch('git_progress', progress);
 	};
 
-	setUpdating = () => {
-		this.dispatch('set_log', '-> Updating mods...');
-		this.dispatch('play_locked', true);
-		this.dispatch('play_text', 'Updating');
+	setPlayDisabled = async (disabled: boolean) => {
+		await this.dispatch('play_locked', disabled);
 	};
 
-	setReady = (showMessage: boolean) => {
-		this.dispatch('play_locked', false);
-		this.dispatch('play_text', 'Play');
-		this.dispatch('status_text', 'Ready to play');
-		showMessage && this.dispatch('set_log', '-> Running latest mods');
+	dispatch = async (type: string, payload: any) => {
+		await invoke(type, { message: payload, window: getCurrent() });
 	};
 
-	setUpdateAvailable = (showMessage: boolean) => {
-		this.dispatch('play_locked', false);
-		this.dispatch('play_text', 'Update');
-		this.dispatch('status_text', 'Update available');
-		this.dispatch('needs_update', true);
-		showMessage && this.dispatch('set_log', '-> New updates found!');
+	setUpdating = async () => {
+		await this.dispatch('set_log', '-> Updating mods...');
+		await this.dispatch('play_locked', true);
+		await this.dispatch('play_text', 'Updating');
 	};
 
-	setNotInstalled = () => {
-		this.dispatch('play_locked', false);
-		this.dispatch('play_text', 'Install');
-		this.dispatch('status_text', 'Not installed');
-		this.dispatch('needs_update', false);
-		this.dispatch('set_log', '-> You need to install the mods first');
-		this.dispatch('is_installed', false);
+	setUninstalling = async () => {
+		await this.dispatch('set_log', '-> Removing old files');
+		await this.dispatch('play_locked', true);
+		await this.dispatch('play_text', 'Uninstalling');
 	};
 
-	setUnpacking = () => {
-		this.dispatch('set_log', '-> Unpacking mods...');
-		this.dispatch('play_locked', true);
-		this.dispatch('play_text', 'Unpacking');
-		this.dispatch('progress_type', 'indeterminate');
-		this.dispatch('status_text', 'Unpacking mods...');
+	setReady = async (showMessage: boolean) => {
+		await this.dispatch('play_locked', false);
+		await this.dispatch('play_text', 'Play');
+		await this.dispatch('status_text', 'Ready to play');
+		showMessage && (await this.dispatch('set_log', '-> Running latest mods'));
 	};
 
-	setUninstalling = () => {
-		this.dispatch('set_log', '-> Removing old files');
-		this.dispatch('play_locked', true);
-		this.dispatch('play_text', 'Uninstalling');
+	setUpdateAvailable = async (showMessage: boolean) => {
+		await this.dispatch('play_locked', false);
+		await this.dispatch('play_text', 'Update');
+		await this.dispatch('status_text', 'Update available');
+		await this.dispatch('needs_update', true);
+		showMessage && (await this.dispatch('set_log', '-> New updates found!'));
 	};
 
-	setUninstalled = () => {
-		this.dispatch('is_installed', false);
-		this.dispatch('needs_update', false);
-		this.dispatch('play_locked', false);
-		this.dispatch('play_text', 'Install');
-		this.dispatch('status_text', 'Uninstalled!');
-		this.dispatch('set_log', '-> Old files removed!');
-		this.dispatch('git_progress', 0);
+	setDownloading = async () => {
+		await this.dispatch('status_text', 'Starting download...');
+		await this.dispatch('set_log', '-> Downloading mods...');
+		await this.dispatch('play_locked', true);
+		await this.dispatch('play_text', 'Installing');
+		await this.dispatch('is_installed', false);
+		await this.dispatch('needs_update', false);
 	};
 
-	setOpenValheim = (sendMessage: boolean) => {
-		this.dispatch('play_text', 'Play');
-		this.dispatch('play_locked', true);
-		sendMessage && this.dispatch('set_log', '-> Please launch Valheim to begin install!');
-		sendMessage && this.dispatch('status_text', 'Waiting for Valheim...');
+	setNotInstalled = async () => {
+		await this.dispatch('play_locked', false);
+		await this.dispatch('play_text', 'Install');
+		await this.dispatch('status_text', 'Not installed');
+		await this.dispatch('needs_update', false);
+		await this.dispatch('set_log', '-> You need to install the mods first');
+		await this.dispatch('is_installed', false);
 	};
 
-	setGitProgress = (progress: number) => {
-		this.dispatch('git_progress', progress);
+	setUninstalled = async () => {
+		await this.dispatch('is_installed', false);
+		await this.dispatch('needs_update', false);
+		await this.dispatch('play_locked', false);
+		await this.dispatch('play_text', 'Install');
+		await this.dispatch('status_text', 'Uninstalled!');
+		await this.dispatch('set_log', '-> Old files removed!');
+		await this.dispatch('git_progress', 0);
 	};
 
-	setStatusText = (text: string) => {
-		this.dispatch('status_text', text);
-	};
-
-	setPlayDisabled = (disabled: boolean) => {
-		this.dispatch('play_locked', disabled);
-	};
-
-	dispatch = (type: string, payload: any) => {
-		invoke(type, { message: payload, window: getCurrent() }).then((res) => res);
+	setInstalled = async () => {
+		await this.dispatch('is_installed', true);
+		await this.dispatch('needs_update', false);
+		await this.dispatch('play_text', 'Play');
+		await this.dispatch('play_locked', false);
+		await this.dispatch('progress_type', 'determinate');
+		await this.dispatch('git_progress', 0);
+		await this.dispatch('status_text', 'Done!');
+		await this.dispatch('set_log', '-> Mods installed!');
+		await this.dispatch('set_log', '-> Ready to play!');
 	};
 }
 

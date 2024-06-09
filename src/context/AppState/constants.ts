@@ -1,21 +1,19 @@
 import { createContext } from 'react';
 
-import { AppStateContextProps } from '~/context/AppState/types.ts';
+import { AppStateContextProps } from './types';
 
 const initialState: AppStateContextProps = {
-	update: null,
 	repoUrl: '',
+	update: null,
 	playText: '',
 	appVersion: '',
 	statusText: '',
 	gitProgress: 0,
-	valheimPath: '',
 	isInstalled: false,
 	needsUpdate: false,
 	playDisabled: false,
 	progressType: undefined,
-	setRepoUrl: async () => {},
-	setValheimPath: async () => {}
+	setRepoUrl: async () => {}
 };
 
 export const AppStateContext = createContext<AppStateContextProps>(initialState);

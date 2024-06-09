@@ -28,6 +28,7 @@
 
 	.playButton {
 		@include actionButton;
+		height: 30px;
 	}
 
 	.notification {

@@ -1,10 +1,10 @@
 import { Menu } from '@mui/material';
+import React, { useContext } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import React, { useState, useEffect, useContext } from 'react';
 
 import styles from './styles.module.scss';
-import { LogContext } from '~/context/LogContext/constants.tsx';
+import { LogContext } from '~/context/LogContext/constants';
 
 interface IContextMenu {
 	mouseX: number;
@@ -13,11 +13,10 @@ interface IContextMenu {
 
 const LogPanel: React.FC = () => {
 	const { logs, cleanLogs } = useContext(LogContext);
-	// const [scrollRef, setScrollRef] = useState(null);
-	const scrollRef = React.useRef<Scrollbars & { view: HTMLDivElement; update: () => void }>(null);
-	const [contextMenu, setContextMenu] = useState<IContextMenu | null>(null);
+	const scrollRef = React.useRef<Scrollbars & { update: () => void; view: HTMLDivElement }>(null);
+	const [contextMenu, setContextMenu] = React.useState<null | IContextMenu>(null);
 
-	useEffect(() => {
+	React.useEffect(() => {
 		scrollRef?.current?.scrollToBottom();
 	}, [logs]);
 
@@ -29,7 +28,7 @@ const LogPanel: React.FC = () => {
 				? {
 						mouseX: event.clientX + 2,
 						mouseY: event.clientY - 6
-				  }
+					}
 				: null
 		);
 	};
@@ -46,12 +45,12 @@ const LogPanel: React.FC = () => {
 	return (
 		<div className={styles.container} onContextMenu={handleContextMenu}>
 			<Menu
-				open={contextMenu !== null}
 				onClose={handleClose}
+				open={contextMenu !== null}
 				anchorReference="anchorPosition"
 				anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
 			>
-				<MenuItem className={styles.menuItem} onClick={handleClean}>
+				<MenuItem onClick={handleClean} className={styles.menuItem}>
 					Clean
 				</MenuItem>
 			</Menu>

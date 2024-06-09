@@ -30,23 +30,23 @@ const TitleBar: React.FC = () => {
 	return (
 		<div className={styles.container}>
 			{!isSettingWindowOpen ? (
-				<button className={`${styles.btn} ${styles.options}`} onClick={handleClick}>
+				<button onClick={handleClick} className={`${styles.btn} ${styles.options}`}>
 					Options
 				</button>
 			) : (
-				<button className={`${styles.btn} ${styles.backButton}`} onClick={handleBack}>
+				<button onClick={handleBack} className={`${styles.btn} ${styles.backButton}`}>
 					<ArrowBackIcon sx={{ fontSize: 15, color: '#d2d2d2' }} />
 				</button>
 			)}
 			<MenuOptions anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
 			<div data-tauri-drag-region className={styles.titleBar}></div>
 			{!isSettingWindowOpen && (
-				<button className={`${styles.btn} ${styles.settingsButton}`} onClick={handleOpenSettings}>
+				<button onClick={handleOpenSettings} className={`${styles.btn} ${styles.settingsButton}`}>
 					<SettingsIcon sx={{ fontSize: 15, color: '#d2d2d2' }} />
 				</button>
 			)}
 			{!isSettingWindowOpen && (
-				<button className={`${styles.btn} ${styles.closeButton}`} onClick={() => getCurrent().close()}>
+				<button onClick={() => getCurrent().close()} className={`${styles.btn} ${styles.closeButton}`}>
 					<CloseIcon sx={{ fontSize: 15, color: '#d2d2d2' }} />
 				</button>
 			)}

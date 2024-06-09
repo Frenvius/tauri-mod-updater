@@ -1,33 +1,30 @@
 import { ReactNode } from 'react';
 import { Update } from '@tauri-apps/plugin-updater';
 
-export type ProgressType = 'determinate' | 'indeterminate' | 'buffer' | 'query' | undefined;
+export type ProgressType = 'query' | 'buffer' | undefined | 'determinate' | 'indeterminate';
 
 export interface AppStateContextProps {
-	update: Update | null;
 	repoUrl: string;
 	playText: string;
 	statusText: string;
 	appVersion: string;
-	valheimPath: string;
 	gitProgress: number;
 	isInstalled: boolean;
 	needsUpdate: boolean;
+	update: null | Update;
 	playDisabled: boolean;
 	progressType: ProgressType;
 	setRepoUrl: (url: string) => Promise<void>;
-	setValheimPath: (path: string) => Promise<void>;
 }
 
 export interface Config {
-	installed: boolean;
 	update: boolean;
 	repoUrl: string;
-	valheimPath: string;
+	installed: boolean;
 }
 
 export interface AppStateProviderProps {
 	config: Config;
-	updateData: Update | null;
 	children: ReactNode;
+	updateData: null | Update;
 }

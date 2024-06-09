@@ -1,4 +1,4 @@
-import type { LogContextType } from '~/context/LogContext/types.ts';
+import type { LogContextType } from './types';
 
 import { createContext } from 'react';
 

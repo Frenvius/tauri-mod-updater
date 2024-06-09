@@ -1,27 +1,21 @@
 import React from 'react';
+import { invoke } from '@tauri-apps/api/core';
 import { getVersion } from '@tauri-apps/api/app';
-import { invoke } from '@tauri-apps/api/primitives';
 import { listen, UnlistenFn } from '@tauri-apps/api/event';
 
 import { AppStateContext } from '~/context/AppState/constants';
 import { ProgressType, AppStateProviderProps } from '~/context/AppState/types';
 
-const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, updateData, children }) => {
+const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, children, updateData }) => {
 	const [repoUrl, setRepo] = React.useState(config.repoUrl);
 	const [playText, setPlayText] = React.useState('Play');
 	const [appVersion, setAppVersion] = React.useState('');
-	const [valheimPath, setPath] = React.useState(config.valheimPath);
 	const [gitProgress, setGitProgress] = React.useState(0);
 	const [playDisabled, setPlayDisabled] = React.useState(false);
 	const [statusText, setStatusText] = React.useState('Checking for updates...');
 	const [needsUpdate, setNeedsUpdate] = React.useState(config.update || false);
 	const [isInstalled, setIsInstalled] = React.useState(config.installed || false);
 	const [progressType, setProgressType] = React.useState('determinate' as ProgressType);
-
-	const setValheimPath = async (path: string): Promise<void> => {
-		setPath(path);
-		await setConfig('valheimPath', path);
-	};
 
 	const setRepoUrl = async (url: string): Promise<void> => {
 		setRepo(url);
@@ -82,7 +76,6 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, updateData,
 	return (
 		<AppStateContext.Provider
 			value={{
-				update: updateData,
 				repoUrl,
 				playText,
 				setRepoUrl,
@@ -91,10 +84,9 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ config, updateData,
 				gitProgress,
 				isInstalled,
 				needsUpdate,
-				valheimPath,
 				playDisabled,
 				progressType,
-				setValheimPath
+				update: updateData
 			}}
 		>
 			{children}
